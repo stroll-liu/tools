@@ -129,7 +129,7 @@ export async function detectOS () {
 
 // 参数过滤
 export async function jsonTreat (a, b, arr) {
-  let arr = []
+  const keyArr = []
   if (b) {
     Object.keys(b).forEach(key => {
       if (arr) {
@@ -139,16 +139,15 @@ export async function jsonTreat (a, b, arr) {
       } else {
         a[key] = b[key]
       }
-      arr.push(key)
     })
   } else if (a) {
     Object.keys(a).forEach(key => {
       if (a[key]) {
-        arr.push(key)
+        keyArr.push(key)
       }
     })
   }
-  return arr
+  return keyArr
 }
 
 // 过滤
@@ -158,22 +157,24 @@ export async function fromVerify(v, format) {
   }
 }
 
-// 设置session
+// 设置 session
 export async function setSession ({ name }, obj) {
   return sessionStorage.setItem(name, obj)
 }
 
-// 获取session
+// 获取 session
 export async function getSession ({ name }) {
   return sessionStorage.getItem(name)
 }
 
-// 更新session
+// 更新 session
 export async function pushSession ({ name, arr }, obj = {}) {
   const msg = getSession({ name: name })
   let msgKey = null
   let index = 0
-  
+  if (arr && typeof arr === 'string') {
+    arr = arr.split('.')
+  }
   async function getMsgKey (item) {
     if (arr.length > index) {
       if (item[arr[index]]) {
@@ -187,7 +188,7 @@ export async function pushSession ({ name, arr }, obj = {}) {
     }
   }
   if (arr && arr.length) {
-    await getMsgKey(item)
+    await getMsgKey(msg)
     for (let key in obj) {
       msgKey[key] = obj[key]
     }
@@ -200,15 +201,64 @@ export async function pushSession ({ name, arr }, obj = {}) {
   return setSession({ name: name }, msg)
 }
 
+// 导出 csv
+export async function exportCSV ({ header = [], filterKey = [], list = [] }) {
+  const mainStr = []
+  mainStr.push(header.join("\t,")+"\n")
+  list.forEach( item => {
+    const temp = []
+    filterKey.forEach(el => {
+      temp.push(item[el])
+    })
+    mainStr.push(temp.join("\t,")+"\n")
+  })
+
+  const uri = 'data:text/csv;charset=utf-8,\ufeff' + encodeURIComponent(mainStr.join(""))
+  let link = document.createElement('a')
+  link.href = uri
+  link.download = `${Math.random().toString(36).slice(-8)}-${new Date().getTime()}.csv`
+  document.body.appendChild(link)
+  link.click()
+}
+
+// 导出 excel
+import { export_json_to_excel } from './core/Export2Excel'
+export async function exportExcel ({ tableJson = [], merges = [], filename, bookType }) {
+  function formatJson (filterKey, jsonData) {
+    return jsonData.map(v => filterKey.map(j => v[j]))
+  }
+
+  const header = []
+  const data = []
+  const sheetname = []
+
+  tableJson.forEach(item => {
+    header.push(item.header)
+    data.push(formatJson(item.filterKey, item.list))
+    sheetname.push(item.sheetName)
+  })
+
+  export_json_to_excel({
+    header,
+    data,
+    sheetname,
+    merges,
+    bookType,
+    filename: filename || `${Math.random().toString(36).slice(-8)}-${new Date().getTime()}`
+  })
+}
+
 export default {
   ask,
   DTC,
   dedupe,
   textTip,
   detectOS,
-  jsonFilter,
+  jsonTreat,
   fromVerify,
   setSession,
   getSession,
-  pushSession
+  pushSession,
+  exportCSV,
+  exportExcel
 }
