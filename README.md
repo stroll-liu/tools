@@ -83,6 +83,6 @@ exportCSV({tHeader, filterKey, list})
   // sheetName 字符串，sheet名称
 // filename 字符串，文件名称 默认 `${随机字符串}-${当前时间戳}`
 // bookType 字符串，文件格式 默认 xlsx
-exportExcel({ tableJson, merges, filename, bookType })
+exportExcel({ tableJson, filename, bookType })
 
 ```
