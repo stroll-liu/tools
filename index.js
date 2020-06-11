@@ -223,7 +223,7 @@ export async function exportCSV ({ header = [], filterKey = [], list = [] }) {
 
 // 导出 excel
 import { export_json_to_excel } from './core/Export2Excel'
-export async function exportExcel ({ tableJson = [], merges = [], filename, bookType }) {
+export async function exportExcel ({ tableJson = [], filename, bookType }) {
   function formatJson (filterKey, jsonData) {
     return jsonData.map(v => filterKey.map(j => v[j]))
   }
@@ -231,14 +231,19 @@ export async function exportExcel ({ tableJson = [], merges = [], filename, book
   const header = []
   const data = []
   const sheetname = []
+  const multiHeader = []
+  const merges = []
 
-  tableJson.forEach(item => {
-    header.push(item.header)
-    data.push(formatJson(item.filterKey, item.list))
-    sheetname.push(item.sheetName)
+  tableJson.forEach((item, i) => {
+    header.push(item.header || item.filterKey || [])
+    merges.push(item.merges || [])
+    multiHeader.push(item.multiHeader || [])
+    data.push(formatJson(item.filterKey, item.list || []))
+    sheetname.push(item.sheetName || `${Math.random().toString(36).slice(-8)}-${new Date().getTime()}-${i}`)
   })
 
   export_json_to_excel({
+    multiHeader,
     header,
     data,
     sheetname,

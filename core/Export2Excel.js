@@ -153,17 +153,13 @@ export function export_table_to_excel(id) {
   )
 }
  
- 
- 
-//主要修改此函数内的方法
- 
 export function export_json_to_excel({
-  multiHeader = [],
+  multiHeader,
   header,
   data,
   sheetname,
   filename,
-  merges = [],
+  merges,
   autoWidth = true,
   bookType = "xlsx"
 } = {}) {
@@ -172,12 +168,11 @@ export function export_json_to_excel({
  
   for (var i = 0; i < header.length; i++) {
     data[i].unshift(header[i])
-  }
- 
-  // data.unshift(header)
- 
-  for (let i = multiHeader.length - 1; i > -1; i--) {
-    data.unshift(multiHeader[i])
+    if (multiHeader[i] && multiHeader[i].length) {
+      for (let k = multiHeader[i].length - 1; k > -1; k--) {
+        data[i].unshift(multiHeader[i][k])
+      }
+    }
   }
  
   var ws_name = sheetname
@@ -188,10 +183,13 @@ export function export_json_to_excel({
   }
  
   if (merges.length > 0) {
-    if (!ws["!merges"]) ws["!merges"] = []
-    merges.forEach(item => {
-      ws["!merges"].push(XLSX.utils.decode_range(item))
-    })
+    for (let i = 0; i < ws.length; i++) {
+      if (!ws[i]["!merges"]) ws[i]["!merges"] = []
+      merges[i].forEach(item => {
+        ws[i]["!merges"].push(XLSX.utils.decode_range(item))
+      })
+      
+    }
   }
   // console.log("width", autoWidth)
   if (autoWidth) {
