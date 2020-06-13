@@ -47,10 +47,9 @@ detectOS()
 // 前两个参数为json对象，第三个为数组
 jsonTreat(jsonObjA, jsonObjB, arr)
 
-// 过滤
-// v 需要过滤的值
-// format 过滤的 规则 （目前只有 'onlyNumbers'）
-fromVerify(v, format)
+// 指定长度随即字符串
+// len 数字，要生成的长度，默认 30
+randomString(len)
 
 // 设置session
 // name 参数 session 的 key

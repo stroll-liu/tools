@@ -150,11 +150,13 @@ export async function jsonTreat (a, b, arr) {
   return keyArr
 }
 
-// 过滤
-export async function fromVerify(v, format) {
-  if (format === 'onlyNumbers') {
-    return String(v).replace(/[^\d]/g, '')
+function randomString(len){
+  len = len || 30
+  let str = ''
+  while (str.length < len) {
+    str += Math.random().toString(36).substring(2)
   }
+  return str.substring(0,len);
 }
 
 // 设置 session
