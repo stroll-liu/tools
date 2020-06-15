@@ -262,7 +262,7 @@ export default {
   textTip,
   detectOS,
   jsonTreat,
-  fromVerify,
+  randomString,
   setSession,
   getSession,
   pushSession,
