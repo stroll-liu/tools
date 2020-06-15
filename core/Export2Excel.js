@@ -1,7 +1,7 @@
 //Export2Excel.js 
  
 /* eslint-disable */
-require("script-loader!file-saver")
+require("file-saver")
 import XLSX from "xlsx"
  
 function generateArray(table) {
