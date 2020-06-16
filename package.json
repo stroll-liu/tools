@@ -19,9 +19,6 @@
     "url": "https://github.com/stroll-liu/tools/issues"
   },
   "homepage": "https://github.com/stroll-liu/tools#readme",
-  "dependencies": {
-    "file-saver": "^2.0.2",
-    "xlsx": "^0.16.2"
-  },
+  "dependencies": {},
   "devDependencies": {}
 }
