@@ -66,4 +66,42 @@ getSession({ name })
 // obj 参数 需要更新的
 pushSession({ name, arr }, obj = {})
 
+// Promise WebSocket
+// class WebSocketClass {
+//   // 。。。
+// }
+data () {
+  return {
+    websocketUrl: 'ws://localhost:9000/websocket',
+    CreateWebSocket: null
+  }
+},
+mounted () {
+  // new 一个 WebSocket
+  // websocketUrl 发送的地址
+  this.CreateWebSocket = new WebSocketClass(this.websocketUrl)
+},
+methods: {
+  onopen () {
+    // send 发送给后端的数据
+    // res 接受后端返回的数据
+    this.CreateWebSocket.open({ send: 'send' }).then(res => {
+      console.log(res)
+    })
+  },
+  onsend () {
+    // ee 发送给后端的数据
+    // res 接受后端返回的数据
+    this.CreateWebSocket.send('ee').then(res => {
+      console.log(res)
+    })
+  },
+  onclose () {
+    // res 成功与失败 信息
+    this.CreateWebSocket.close().then(res => {
+      console.log(res)
+    })
+  }
+}
+
 ```
