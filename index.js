@@ -150,6 +150,7 @@ export async function jsonTreat (a, b, arr) {
   return keyArr
 }
 
+// 随机字符串
 function randomString(len){
   len = len || 30
   let str = ''
@@ -161,12 +162,20 @@ function randomString(len){
 
 // 设置 session
 export async function setSession ({ name }, obj) {
-  return sessionStorage.setItem(name, obj)
+  return new Promise((res, rej) => {
+    try {
+      const data = sessionStorage.setItem(name, JSON.stringify(obj))
+      res(data)
+    } catch (error) {
+      console.log(error)
+      rej(error)
+    }
+  })
 }
 
 // 获取 session
-export async function getSession ({ name }) {
-  return sessionStorage.getItem(name)
+export function getSession ({ name }) {
+  return JSON.parse(sessionStorage.getItem(name))
 }
 
 // 更新 session
@@ -200,7 +209,7 @@ export async function pushSession ({ name, arr }, obj = {}) {
     }
   }
 
-  return setSession({ name: name }, msg)
+  return await setSession({ name: name }, msg)
 }
 
 // Promise WebSocket
