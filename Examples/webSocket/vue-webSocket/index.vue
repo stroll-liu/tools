@@ -7,7 +7,6 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
 // main.js  Vue.prototype.$tools = Tools
 export default {
   data () {
@@ -30,11 +29,6 @@ export default {
         console.log(res)
       })
     },
-    onmessage () {
-      this.CreateWebSocket.getMessage().then(res => {
-        console.log(res)
-      })
-    },
     onclose () {
       this.CreateWebSocket.close().then(res => {
         console.log(res)
@@ -44,5 +38,4 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-</style>
+<style lang="stylus" scoped></style>

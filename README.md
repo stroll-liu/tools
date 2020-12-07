@@ -67,12 +67,15 @@ getSession({ name })
 pushSession({ name, arr }, obj = {})
 
 // Promise WebSocket
+// 示例地址： 
+//  vue: ./Examples/webSocket/vue-webSocket
+//  koa: ./Examples/webSocket/koa-webSocket
 // class WebSocketClass {
 //   // 。。。
 // }
 data () {
   return {
-    websocketUrl: 'ws://localhost:9000/websocket',
+    websocketUrl: 'ws://localhost:9000/websocket', // WebSocket 接口地址
     CreateWebSocket: null
   }
 },
@@ -82,25 +85,74 @@ mounted () {
   this.CreateWebSocket = new WebSocketClass(this.websocketUrl)
 },
 methods: {
-  onopen () {
+  onopen () { // 连接后端并发送数据
     // send 发送给后端的数据
     // res 接受后端返回的数据
     this.CreateWebSocket.open({ send: 'send' }).then(res => {
       console.log(res)
     })
   },
-  onsend () {
+  onsend () { // 向后端发送数据
     // ee 发送给后端的数据
     // res 接受后端返回的数据
     this.CreateWebSocket.send('ee').then(res => {
       console.log(res)
     })
   },
-  onclose () {
+  onclose () { // 关闭 WebSocket
     // res 成功与失败 信息
     this.CreateWebSocket.close().then(res => {
       console.log(res)
     })
+  }
+}
+
+// Promise webWorker
+// 示例地址： ./Examples/webSocket/webWorker
+// class WebWorkerClass {
+//   // 。。。
+// }
+data () {
+  return {
+    webWorker: null
+  }
+},
+methods: {
+  create () {
+    function work () { // 向 webWorker 里传入的函数
+      onerror = function (err) { // 错误处理
+        console.log(err)
+      }
+      onmessage = function ({ data }) { // webWorker 接收数据
+        // webWorker 处理数据
+        const { message } = data
+        let i = message + 10
+
+        // webWorker 返回数据
+        postMessage({result: i})
+      }
+    }
+    // 创建 webWorker
+    this.webWorker = new this.$tools.WebWorkerClass(work)
+  },
+  send () {
+    if (this.webWorker) {
+      // 向 webWorker 发送数据
+      this.webWorker.send({ message: 1 }).then(res => { 
+        if (res) {
+          // 处理 webWorker 返回的数据
+          this.webWorker.message().then(res => {
+            console.log(res)
+          })
+        }
+      })
+    } else {
+      console.log('请先创建 webWorker')
+    }
+  },
+  close () { // 关闭 webWorker
+    this.webWorker && this.webWorker.close()
+    this.webWorker = null
   }
 }
 

@@ -150,7 +150,7 @@ export async function jsonTreat (a, b, arr) {
   return keyArr
 }
 
-// 随机字符串
+// 指定长度随即字符串
 function randomString(len){
   len = len || 30
   let str = ''
@@ -287,6 +287,63 @@ export class WebSocketClass {
   // 3：表示连接已经关闭，或者打开连接失败。
 }
 
+export class WebWorkerClass {
+  constructor (fn) {
+    if (!window.Worker) throw new Error('Worker 不兼容')
+    if (typeof fn == 'function') {
+      this.worker = new Worker (
+        URL.createObjectURL (new Blob ([`(${fn.toString()})()`]))
+      )
+    } else {
+      throw new Error('new WebWorker 传入参数必须为函数')
+    }
+  }
+
+  send (data) {
+    return new Promise((resolve, reject) => {
+      try {
+        this.worker.postMessage(data)
+        resolve({ code: 0, message: '发送成功' })
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
+
+  message () {
+    return new Promise((resolve, reject) => {
+      try {
+        this.worker.onmessage = function(e) {
+          resolve(e)
+        }
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
+
+  close () {
+    return new Promise((resolve, reject) => {
+      try {
+        this.worker.terminate()
+        this.worker = null
+        resolve({ code: 0, message: '关闭成功' })
+      } catch (error) {
+        reject(error)
+      }
+    })
+  }
+
+  errer () {
+    return new Promise((resolve) => {
+      this.worker.onerror = function (err) {
+        resolve(err)
+      }
+    })
+  }
+
+}
+
 export default {
   ask,
   DTC,
@@ -298,5 +355,6 @@ export default {
   setSession,
   getSession,
   pushSession,
+  WebWorkerClass,
   WebSocketClass
 }
